@@ -146,8 +146,8 @@ export default function MainPage(): JSX.Element {
     fetchProjectData()
       .then(() => fetchEmployeeData())
       .then(() => fetchClientData())
-      .then(() => insertAllProjectsAsViewable());
-  }, []);
+      .then(() => insertAllProjectsAsViewable());    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); 
   let aggregateRevenue = 0;
   state.ProjectData.map(
     (e: ProjectDataInterface) =>

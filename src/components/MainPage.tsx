@@ -3,14 +3,12 @@ import {
   Employee,
   ReducerStateType,
   ProjectDataInterface,
-  Contract,
-  EmployeePayload,
   EmployeeDataAction,
   ProjectDataAction,
   ClientDataAction,
   ClientDataInterface,
   ViewableProject,
-  InitialViewableProjectAction
+  InitialViewableProjectAction,
 } from "../utils/interfaces";
 
 const initialState: ReducerStateType = {
@@ -44,7 +42,7 @@ type ReducerActionType =
   | ProjectDataAction
   | EmployeeDataAction
   | ClientDataAction
-  | InitialViewableProjectAction
+  | InitialViewableProjectAction;
 
 function reducer(state: any, action: ReducerActionType) {
   switch (action.type) {
@@ -69,26 +67,23 @@ function reducer(state: any, action: ReducerActionType) {
     }
     case "clientData": {
       for (const { clientId, clientName } of state.ProjectData) {
-        for (const {id, name} of action.payload) {
-          if (
-            clientId === id &&
-            clientName.length === 0
-          ){
-            clientName.push(name)
+        for (const { id, name } of action.payload) {
+          if (clientId === id && clientName.length === 0) {
+            clientName.push(name);
           }
         }
       }
-      return { ...state, [action.fieldName]: action.payload};
+      return { ...state, [action.fieldName]: action.payload };
     }
-    case "viewableProjectInit":{
-      return {...state, [action.fieldName]: action.payload}
+    case "viewableProjectInit": {
+      return { ...state, [action.fieldName]: action.payload };
     }
   }
 }
 
 export default function MainPage(): JSX.Element {
   const [state, dispatch] = useReducer(reducer, initialState);
-  console.log(state.ViewableProjects)
+  console.log(state.ViewableProjects);
   useEffect(() => {
     async function fetchProjectData() {
       const rawProjectFetchedData = await fetch(
@@ -98,7 +93,7 @@ export default function MainPage(): JSX.Element {
         await rawProjectFetchedData.json();
       for (const project of jsonProjectData) {
         project.employees = [];
-        project.clientName = []
+        project.clientName = [];
       }
       dispatch({
         type: "projectData",
@@ -128,24 +123,30 @@ export default function MainPage(): JSX.Element {
         payload: jsonClientData,
       });
     }
-    async function insertAllProjectsAsViewable (){
-      const viewableProjectData: ViewableProject[] = []
-      for (let i = 0; i < state.ProjectData.length; i++){
-        const viewableProject: ViewableProject = {size: state.ProjectData[i].contract.size, clientName: state.ProjectData[i].clientName[0], employees: state.ProjectData[i].employees, startDate: state.ProjectData[i].contract.startDate, endDate: state.ProjectData[i].contract.endDate}
-        viewableProjectData.push(viewableProject)
-        console.log(i)
+    async function insertAllProjectsAsViewable() {
+      const viewableProjectData: ViewableProject[] = [];
+      for (let i = 0; i < state.ProjectData.length; i++) {
+        const viewableProject: ViewableProject = {
+          size: state.ProjectData[i].contract.size,
+          clientName: state.ProjectData[i].clientName[0],
+          employees: state.ProjectData[i].employees,
+          startDate: state.ProjectData[i].contract.startDate,
+          endDate: state.ProjectData[i].contract.endDate,
+        };
+        viewableProjectData.push(viewableProject);
+        console.log(i);
       }
-      console.log(viewableProjectData)
+      console.log(viewableProjectData);
       dispatch({
         type: "viewableProjectInit",
         fieldName: "ViewableProjects",
-        payload: viewableProjectData
-      })
+        payload: viewableProjectData,
+      });
     }
     fetchProjectData()
       .then(() => fetchEmployeeData())
       .then(() => fetchClientData())
-      .then(()=> insertAllProjectsAsViewable ());
+      .then(() => insertAllProjectsAsViewable());
   }, []);
   let aggregateRevenue = 0;
   state.ProjectData.map(

@@ -35,18 +35,20 @@ const initialState: ReducerStateType = {
     },
   ],
   Clients: [{ id: "", name: "" }],
-  ViewableProjects: [{
-    id: "",
-    clientId: "",
-    clientName: [],
-    employeeIds: [""],
-    employees: [],
-    contract: {
-      startDate: "",
-      endDate: "",
-      size: "",
+  ViewableProjects: [
+    {
+      id: "",
+      clientId: "",
+      clientName: [],
+      employeeIds: [""],
+      employees: [],
+      contract: {
+        startDate: "",
+        endDate: "",
+        size: "",
+      },
     },
-  }],
+  ],
 };
 
 type ReducerActionType =

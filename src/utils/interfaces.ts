@@ -14,7 +14,7 @@ export interface ReducerStateType {
   ProjectData: ProjectDataInterface[];
   Employees: Employee[];
   Clients: ClientDataInterface[];
-  ViewableProjects: ViewableProject[];
+  ViewableProjects: ProjectDataInterface[];
 }
 
 export interface ProjectDataInterface {

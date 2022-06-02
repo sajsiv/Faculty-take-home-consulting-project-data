@@ -35,7 +35,18 @@ const initialState: ReducerStateType = {
     },
   ],
   Clients: [{ id: "", name: "" }],
-  ViewableProjects: [],
+  ViewableProjects: [{
+    id: "",
+    clientId: "",
+    clientName: [],
+    employeeIds: [""],
+    employees: [],
+    contract: {
+      startDate: "",
+      endDate: "",
+      size: "",
+    },
+  }],
 };
 
 type ReducerActionType =
@@ -44,7 +55,7 @@ type ReducerActionType =
   | ClientDataAction
   | InitialViewableProjectAction;
 
-function reducer(state: any, action: ReducerActionType) {
+function reducer(state: ReducerStateType, action: ReducerActionType) {
   switch (action.type) {
     case "projectData": {
       return { ...state, [action.fieldName]: action.payload };

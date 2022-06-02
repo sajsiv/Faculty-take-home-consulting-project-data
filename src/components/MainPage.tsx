@@ -35,7 +35,20 @@ const initialState: ReducerStateType = {
     },
   ],
   Clients: [{ id: "", name: "" }],
-  ViewableProjects: [],
+  ViewableProjects: [
+    {
+      id: "",
+      clientId: "",
+      clientName: [],
+      employeeIds: [""],
+      employees: [],
+      contract: {
+        startDate: "",
+        endDate: "",
+        size: "",
+      },
+    },
+  ],
 };
 
 type ReducerActionType =
@@ -44,7 +57,7 @@ type ReducerActionType =
   | ClientDataAction
   | InitialViewableProjectAction;
 
-function reducer(state: any, action: ReducerActionType) {
+function reducer(state: ReducerStateType, action: ReducerActionType) {
   switch (action.type) {
     case "projectData": {
       return { ...state, [action.fieldName]: action.payload };
@@ -146,7 +159,7 @@ export default function MainPage(): JSX.Element {
     fetchProjectData()
       .then(() => fetchEmployeeData())
       .then(() => fetchClientData())
-      .then(() => insertAllProjectsAsViewable());
+      .then(() => insertAllProjectsAsViewable()); // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   let aggregateRevenue = 0;
   state.ProjectData.map(

@@ -136,8 +136,16 @@ export default function EmployeePage(): JSX.Element {
         <div>
           {state.MatchedProjects.map((project: ProjectDataInterface) => (
             <p key={project.id}>
-              Worked on a project for {project.clientName}, From{" "}
-              {project.contract.startDate} to {project.contract.endDate}
+              Worked on a project for{" "}
+              <a
+                href={
+                  "https://saj-siv-faculty-takehome.netlify.app/clients/" +
+                  project.clientId
+                }
+              >
+                {project.clientName}
+              </a>
+              , From {project.contract.startDate} to {project.contract.endDate}
             </p>
           ))}
         </div>

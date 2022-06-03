@@ -318,15 +318,30 @@ export default function MainPage(): JSX.Element {
         {state.ViewableProjects.map((e: ProjectDataInterface) => (
           <div className="ProjectTile" key={e.id}>
             <h2>
-              {e.clientName}, From {e.contract.startDate} to{" "}
-              {e.contract.endDate}
+              <a
+                href={
+                  "https://saj-siv-faculty-takehome.netlify.app/clients/" +
+                  e.clientId
+                }
+              >
+                {e.clientName}
+              </a>
+              , From {e.contract.startDate} to {e.contract.endDate}
             </h2>
             <h4>Employees</h4>
             {e.employees.map((e) => (
               <div key={e.id}>
                 <p>
-                  {e.name}, {e.role}
-                </p>{" "}
+                  <a
+                    href={
+                      "https://saj-siv-faculty-takehome.netlify.app/employees/" +
+                      e.id
+                    }
+                  >
+                    {e.name}
+                  </a>
+                  , {e.role}
+                </p>
                 <img src={e.avatar} alt={e.name + "profile picture"}></img>
               </div>
             ))}

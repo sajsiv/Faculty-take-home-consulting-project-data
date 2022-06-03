@@ -293,8 +293,8 @@ export default function MainPage(): JSX.Element {
   );
   return (
     <div>
-      <h1>All completed Projects</h1>
-      <h2>Agregate Revenue: {setAggregateRev()}</h2>
+      <h1>CorpSquad's completed Projects</h1>
+      <h2>Aggregate Revenue: {setAggregateRev()}</h2>
       Filter by client
       <select onChange={(e) => handleClientSelect(e.target.value)}>
         <option value={""}>All clients</option>
@@ -314,18 +314,19 @@ export default function MainPage(): JSX.Element {
         type="date"
         onChange={(e) => handleEndDateFilter(e.target.value)}
       ></input>
-      {state.ViewableProjects.map((e: ProjectDataInterface) => (
-        <div className="ProjectTile" key={e.id}>
-          <h2>
-            {e.clientName}, From {e.contract.startDate} to {e.contract.endDate}
-          </h2>
-          <h4>Employees</h4>
-          <ul>
+      <div className="projectsFlex">
+        {state.ViewableProjects.map((e: ProjectDataInterface) => (
+          <div className="ProjectTile" key={e.id}>
+            <h2>
+              {e.clientName}, From {e.contract.startDate} to{" "}
+              {e.contract.endDate}
+            </h2>
+            <h4>Employees</h4>
             {e.employees.map((e) => (
               <div key={e.id}>
-                <li>
+                <p>
                   {e.name}, {e.role}
-                </li>{" "}
+                </p>{" "}
                 <img src={e.avatar} alt={e.name + "profile picture"}></img>
               </div>
             ))}
@@ -334,9 +335,9 @@ export default function MainPage(): JSX.Element {
             ) : (
               <></>
             )}
-          </ul>
-        </div>
-      ))}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

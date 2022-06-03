@@ -2,6 +2,7 @@ import MainPage from "./components/MainPage";
 import EmployeePage from "./components/EmployeePage";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ClientPage } from "./components/ClientPage";
+import "./style.css";
 
 function App(): JSX.Element {
   return (

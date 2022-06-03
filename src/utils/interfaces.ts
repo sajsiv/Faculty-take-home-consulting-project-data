@@ -15,6 +15,9 @@ export interface ReducerStateType {
   Employees: Employee[];
   Clients: ClientDataInterface[];
   ViewableProjects: ProjectDataInterface[];
+  ClientNameFilter: string;
+  StartDateFilter: number;
+  EndDateFilter: number;
 }
 
 export interface ProjectDataInterface {
@@ -30,6 +33,8 @@ export interface Contract {
   startDate: string;
   endDate: string;
   size: string;
+  startDateTimeStamp: number;
+  endDateTimeStamp: number;
 }
 
 export interface ClientDataInterface {
@@ -55,16 +60,48 @@ export interface ClientDataAction {
   payload: ClientDataInterface[];
 }
 
+export interface FilterClientAction {
+  type: "FilterClient";
+  fieldName: string;
+  payload: string;
+}
+
+export interface FilterStartDateAction {
+  type: "FilterStartDate";
+  fieldName: string;
+  payload: number;
+}
+
+export interface FilterEndDateAction {
+  type: "FilterEndDate";
+  fieldName: string;
+  payload: number;
+}
+
 export interface InitialViewableProjectAction {
   type: "viewableProjectInit";
   fieldName: string;
-  payload: ViewableProject[];
+  payload: ProjectDataInterface[];
+}
+
+export interface FetchIndividualEmployeeAction {
+  type: "individualmployeeData";
+  fieldName: string;
+  payload: Employee;
 }
 
 export interface ViewableProject {
+  id: string;
   size: string;
   clientName: string;
+  clientId: string;
   employees: Employee[];
-  startDate: string;
-  endDate: string;
+  startDate: Date;
+  endDate: Date;
+}
+
+export interface EmployeePageReducerStateType {
+  employee: Employee;
+  ProjectData: ProjectDataInterface[];
+  MatchedProjects: ProjectDataInterface[];
 }

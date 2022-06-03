@@ -7,9 +7,12 @@ import {
   ProjectDataAction,
   ClientDataAction,
   ClientDataInterface,
-  ViewableProject,
   InitialViewableProjectAction,
+  FilterClientAction,
+  FilterStartDateAction,
+  FilterEndDateAction,
 } from "../utils/interfaces";
+import { stringDateToTimestamp } from "../utils/stringDateToTimeStamp";
 
 const initialState: ReducerStateType = {
   ProjectData: [
@@ -23,6 +26,8 @@ const initialState: ReducerStateType = {
         startDate: "",
         endDate: "",
         size: "",
+        startDateTimeStamp: 0,
+        endDateTimeStamp: Infinity,
       },
     },
   ],
@@ -35,27 +40,20 @@ const initialState: ReducerStateType = {
     },
   ],
   Clients: [{ id: "", name: "" }],
-  ViewableProjects: [
-    {
-      id: "",
-      clientId: "",
-      clientName: [],
-      employeeIds: [""],
-      employees: [],
-      contract: {
-        startDate: "",
-        endDate: "",
-        size: "",
-      },
-    },
-  ],
+  ViewableProjects: [],
+  ClientNameFilter: "",
+  StartDateFilter: 0,
+  EndDateFilter: Infinity,
 };
 
 type ReducerActionType =
   | ProjectDataAction
   | EmployeeDataAction
   | ClientDataAction
-  | InitialViewableProjectAction;
+  | InitialViewableProjectAction
+  | FilterClientAction
+  | FilterStartDateAction
+  | FilterEndDateAction;
 
 function reducer(state: ReducerStateType, action: ReducerActionType) {
   switch (action.type) {
@@ -89,14 +87,83 @@ function reducer(state: ReducerStateType, action: ReducerActionType) {
       return { ...state, [action.fieldName]: action.payload };
     }
     case "viewableProjectInit": {
-      return { ...state, [action.fieldName]: action.payload };
+      state.ViewableProjects = state.ProjectData;
+      return { ...state };
+    }
+    case "FilterClient": {
+      state.ViewableProjects = state.ProjectData;
+      console.log();
+      return {
+        ...state,
+        [action.fieldName]: state.ViewableProjects.filter(
+          (viewableProject: ProjectDataInterface) =>
+            viewableProject.clientId.includes(action.payload)
+        )
+          .filter(
+            (viewableProject: ProjectDataInterface) =>
+              viewableProject.contract.endDateTimeStamp <= state.EndDateFilter
+          )
+          .filter(
+            (viewableProject: ProjectDataInterface) =>
+              viewableProject.contract.startDateTimeStamp >=
+              state.StartDateFilter
+          ),
+        ClientNameFilter: action.payload,
+      };
+    }
+    case "FilterStartDate": {
+      if (action.payload <= state.EndDateFilter) {
+        state.ViewableProjects = state.ProjectData;
+        return {
+          ...state,
+          [action.fieldName]: action.payload,
+          ViewableProjects: state.ViewableProjects.filter(
+            (viewableProject: ProjectDataInterface) =>
+              viewableProject.contract.startDateTimeStamp >= action.payload
+          )
+            .filter(
+              (viewableProject: ProjectDataInterface) =>
+                viewableProject.contract.endDateTimeStamp <= state.EndDateFilter
+            )
+            .filter((viewableProject: ProjectDataInterface) =>
+              viewableProject.clientId.includes(state.ClientNameFilter)
+            ),
+        };
+      } else {
+        alert("Choose an start date before the end date");
+        return { ...state };
+      }
+    }
+    case "FilterEndDate": {
+      console.log("End Date Filter Payload:" + action.payload);
+      if (action.payload >= state.StartDateFilter) {
+        state.ViewableProjects = state.ProjectData;
+        return {
+          ...state,
+          [action.fieldName]: action.payload,
+          ViewableProjects: state.ViewableProjects.filter(
+            (viewableProject: ProjectDataInterface) =>
+              viewableProject.contract.startDateTimeStamp >=
+              state.StartDateFilter
+          )
+            .filter(
+              (viewableProject: ProjectDataInterface) =>
+                viewableProject.contract.endDateTimeStamp <= action.payload
+            )
+            .filter((viewableProject: ProjectDataInterface) =>
+              viewableProject.clientId.includes(state.ClientNameFilter)
+            ),
+        };
+      } else {
+        alert("Choose an end date after the start date");
+        return { ...state };
+      }
     }
   }
 }
 
 export default function MainPage(): JSX.Element {
   const [state, dispatch] = useReducer(reducer, initialState);
-  console.log(state.ViewableProjects);
   useEffect(() => {
     async function fetchProjectData() {
       const rawProjectFetchedData = await fetch(
@@ -104,15 +171,23 @@ export default function MainPage(): JSX.Element {
       );
       const jsonProjectData: ProjectDataInterface[] =
         await rawProjectFetchedData.json();
+      console.log(jsonProjectData);
       for (const project of jsonProjectData) {
         project.employees = [];
         project.clientName = [];
+        project.contract.startDateTimeStamp = stringDateToTimestamp(
+          project.contract.startDate
+        );
+        project.contract.endDateTimeStamp = stringDateToTimestamp(
+          project.contract.endDate
+        );
       }
       dispatch({
         type: "projectData",
         fieldName: "ProjectData",
         payload: jsonProjectData,
       });
+      console.log(1);
     }
     async function fetchEmployeeData() {
       const rawEmployeeData = await fetch(
@@ -124,6 +199,7 @@ export default function MainPage(): JSX.Element {
         fieldName: "Employees",
         payload: jsonEmployeeData,
       });
+      console.log(2);
     }
     async function fetchClientData() {
       const rawClientData = await fetch(
@@ -135,19 +211,13 @@ export default function MainPage(): JSX.Element {
         fieldName: "Clients",
         payload: jsonClientData,
       });
+      console.log(3);
     }
     async function insertAllProjectsAsViewable() {
-      const viewableProjectData: ViewableProject[] = [];
+      const viewableProjectData: ProjectDataInterface[] = [];
       for (let i = 0; i < state.ProjectData.length; i++) {
-        const viewableProject: ViewableProject = {
-          size: state.ProjectData[i].contract.size,
-          clientName: state.ProjectData[i].clientName[0],
-          employees: state.ProjectData[i].employees,
-          startDate: state.ProjectData[i].contract.startDate,
-          endDate: state.ProjectData[i].contract.endDate,
-        };
+        const viewableProject: ProjectDataInterface = state.ProjectData[i];
         viewableProjectData.push(viewableProject);
-        console.log(i);
       }
       console.log(viewableProjectData);
       dispatch({
@@ -155,37 +225,117 @@ export default function MainPage(): JSX.Element {
         fieldName: "ViewableProjects",
         payload: viewableProjectData,
       });
+      console.log(state.ProjectData.length);
     }
     fetchProjectData()
       .then(() => fetchEmployeeData())
       .then(() => fetchClientData())
       .then(() => insertAllProjectsAsViewable()); // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  let aggregateRevenue = 0;
-  state.ProjectData.map(
-    (e: ProjectDataInterface) =>
-      (aggregateRevenue =
-        aggregateRevenue + parseInt(e.contract.size ? e.contract.size : "5"))
-  );
+  function setAggregateRev() {
+    let aggregateRevenue = 0;
+    state.ProjectData.map(
+      (e: ProjectDataInterface) =>
+        (aggregateRevenue =
+          aggregateRevenue + parseInt(e.contract.size ? e.contract.size : "5"))
+    );
+    return aggregateRevenue;
+  }
+  function handleStartDateFilter(inputStartDateFilter: string) {
+    if (inputStartDateFilter === "") {
+      dispatch({
+        type: "FilterStartDate",
+        fieldName: "StartDateFilter",
+        payload: 0,
+      });
+    } else {
+      const tempDateType = new Date(inputStartDateFilter);
+      const startFiltertTimeStamp = tempDateType.getTime();
+      console.log(inputStartDateFilter);
+      dispatch({
+        type: "FilterStartDate",
+        fieldName: "StartDateFilter",
+        payload: startFiltertTimeStamp,
+      });
+    }
+  }
+  function handleEndDateFilter(inputEndDateFilter: string) {
+    console.log(inputEndDateFilter);
+    if (inputEndDateFilter === "") {
+      dispatch({
+        type: "FilterEndDate",
+        fieldName: "EndDateFilter",
+        payload: Infinity,
+      });
+    } else {
+      const tempDateType = new Date(inputEndDateFilter);
+      const endFiltertTimeStamp = tempDateType.getTime();
+      dispatch({
+        type: "FilterEndDate",
+        fieldName: "EndDateFilter",
+        payload: endFiltertTimeStamp,
+      });
+    }
+  }
+
+  function handleClientSelect(client: string) {
+    dispatch({
+      type: "FilterClient",
+      fieldName: "ViewableProjects",
+      payload: client,
+    });
+  }
   console.log(state);
+  console.log(
+    state.StartDateFilter,
+    state.EndDateFilter,
+    state.ViewableProjects
+  );
   return (
     <div>
-      <h2>Agregate Revenue: {aggregateRevenue}</h2>
-      <h2>All completed Projects</h2>
-      <select>
+      <h1>All completed Projects</h1>
+      <h2>Agregate Revenue: {setAggregateRev()}</h2>
+      Filter by client
+      <select onChange={(e) => handleClientSelect(e.target.value)}>
+        <option value={""}>All clients</option>
         {state.Clients.map((client: ClientDataInterface) => (
           <option key={client.id} value={client.id}>
             {client.name}
           </option>
         ))}
       </select>
-      {state.ProjectData.map((e: ProjectDataInterface) => (
-        <p key={e.id} className="projectTile">
-          Hi {e.id}{" "}
-          {e.employees.map((employee) => (
-            <p key={employee.id}>{employee.name}</p>
-          ))}
-        </p>
+      Start Date
+      <input
+        type="date"
+        onChange={(e) => handleStartDateFilter(e.target.value)}
+      ></input>
+      End Date
+      <input
+        type="date"
+        onChange={(e) => handleEndDateFilter(e.target.value)}
+      ></input>
+      {state.ViewableProjects.map((e: ProjectDataInterface) => (
+        <div className="ProjectTile" key={e.id}>
+          <h2 key={e.id}>
+            {e.clientName}, From {e.contract.startDate} to {e.contract.endDate}
+          </h2>
+          <h4>Employees</h4>
+          <ul>
+            {e.employees.map((e) => (
+              <div key={e.id}>
+                <li>
+                  {e.name}, {e.role}
+                </li>{" "}
+                <img src={e.avatar} alt={e.name + "profile picture"}></img>
+              </div>
+            ))}
+            {e.employees.length === 0 ? (
+              <p>No employees found for this project</p>
+            ) : (
+              <></>
+            )}
+          </ul>
+        </div>
       ))}
     </div>
   );

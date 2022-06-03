@@ -133,14 +133,14 @@ export default function EmployeePage(): JSX.Element {
       ></img>
       <h2>Projects</h2>
       {state.MatchedProjects.length > 0 && (
-        <ul>
+        <div>
           {state.MatchedProjects.map((project: ProjectDataInterface) => (
-            <li key={project.id}>
+            <p key={project.id}>
               Worked on a project for {project.clientName}, From{" "}
               {project.contract.startDate} to {project.contract.endDate}
-            </li>
+            </p>
           ))}
-        </ul>
+        </div>
       )}
       {state.MatchedProjects.length === 0 && (
         <p>

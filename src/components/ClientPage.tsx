@@ -163,7 +163,15 @@ export function ClientPage(): JSX.Element {
               <h4>Employees:</h4>{" "}
               {project.employees.map((employee) => (
                 <p key={employee.id}>
-                  {employee.name}, {employee.role}
+                  <a
+                    href={
+                      "https://saj-siv-faculty-takehome.netlify.app/employees/" +
+                      employee.id
+                    }
+                  >
+                    {employee.name}
+                  </a>
+                  , {employee.role}
                 </p>
               ))}
               <br></br>
@@ -180,8 +188,18 @@ export function ClientPage(): JSX.Element {
                 src={employee.avatar}
                 alt={employee.name + " profile pic"}
               ></img>{" "}
-              <h4>Name: {employee.name}</h4> <br></br>{" "}
-              <h4>Role: {employee.role}</h4> <br></br>
+              <h4>
+                Name:{" "}
+                <a
+                  href={
+                    "https://saj-siv-faculty-takehome.netlify.app/employees/" +
+                    employee.id
+                  }
+                >
+                  {employee.name}
+                </a>
+              </h4>{" "}
+              <br></br> <h4>Role: {employee.role}</h4> <br></br>
               <br></br>
             </p>
           ))}

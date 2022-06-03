@@ -104,4 +104,30 @@ export interface EmployeePageReducerStateType {
   employee: Employee;
   ProjectData: ProjectDataInterface[];
   MatchedProjects: ProjectDataInterface[];
+  Clients: ClientDataInterface[];
+}
+
+export interface CreatedMatchedProjectsReducerAction {
+  type: "createMatchedProjectsData";
+  fieldName: string;
+  payload: string;
+}
+
+export interface ClientPageReducerStateType {
+  client: ClientDataInterface;
+  ProjectData: ProjectDataInterface[];
+  MatchedProjects: ProjectDataInterface[];
+  Employees: Employee[];
+  MatchedEmployees: Employee[];
+}
+export interface IndividualClientFetchAction {
+  type: "individualClientData";
+  fieldName: string;
+  payload: ClientDataInterface;
+}
+
+export interface CreatedMatchedEmployeesReducerAction {
+  type: "matchEmployeesToClient";
+  fieldName: string;
+  payload: string;
 }

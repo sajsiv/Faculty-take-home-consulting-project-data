@@ -234,7 +234,7 @@ export default function MainPage(): JSX.Element {
   }, []);
   function setAggregateRev() {
     let aggregateRevenue = 0;
-    state.ProjectData.map(
+    state.ViewableProjects.map(
       (e: ProjectDataInterface) =>
         (aggregateRevenue =
           aggregateRevenue + parseInt(e.contract.size ? e.contract.size : "5"))
@@ -316,7 +316,7 @@ export default function MainPage(): JSX.Element {
       ></input>
       {state.ViewableProjects.map((e: ProjectDataInterface) => (
         <div className="ProjectTile" key={e.id}>
-          <h2 key={e.id}>
+          <h2>
             {e.clientName}, From {e.contract.startDate} to {e.contract.endDate}
           </h2>
           <h4>Employees</h4>

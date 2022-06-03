@@ -320,7 +320,7 @@ export default function MainPage(): JSX.Element {
             <h2>
               <a
                 href={
-                  "https://saj-siv-faculty-takehome.netlify.app/clients/" +
+                  "https://saj-sivia-faculty-takehome.netlify.app/clients/" +
                   e.clientId
                 }
               >
@@ -334,7 +334,7 @@ export default function MainPage(): JSX.Element {
                 <p>
                   <a
                     href={
-                      "https://saj-siv-faculty-takehome.netlify.app/employees/" +
+                      "https://saj-sivia-faculty-takehome.netlify.app/employees/" +
                       e.id
                     }
                   >

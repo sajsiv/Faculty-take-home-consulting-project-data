@@ -139,7 +139,7 @@ export default function EmployeePage(): JSX.Element {
               Worked on a project for{" "}
               <a
                 href={
-                  "https://saj-siv-faculty-takehome.netlify.app/clients/" +
+                  "https://saj-sivia-faculty-takehome.netlify.app/clients/" +
                   project.clientId
                 }
               >

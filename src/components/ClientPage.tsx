@@ -165,7 +165,7 @@ export function ClientPage(): JSX.Element {
                 <p key={employee.id}>
                   <a
                     href={
-                      "https://saj-siv-faculty-takehome.netlify.app/employees/" +
+                      "https://saj-sivia-faculty-takehome.netlify.app/employees/" +
                       employee.id
                     }
                   >
@@ -192,7 +192,7 @@ export function ClientPage(): JSX.Element {
                 Name:{" "}
                 <a
                   href={
-                    "https://saj-siv-faculty-takehome.netlify.app/employees/" +
+                    "https://saj-sivia-faculty-takehome.netlify.app/employees/" +
                     employee.id
                   }
                 >

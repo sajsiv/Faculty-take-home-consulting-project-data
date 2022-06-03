@@ -148,13 +148,19 @@ export function ClientPage(): JSX.Element {
   return (
     <div>
       <h1>{state.client.name}</h1>
-      <h2>{state.MatchedProjects.length} Project{state.MatchedProjects.length>1 && "s"} completed for {state.client.name}</h2>
+      <h2>
+        {state.MatchedProjects.length} Project
+        {state.MatchedProjects.length > 1 && "s"} completed for{" "}
+        {state.client.name}
+      </h2>
       <div>
         {state.MatchedProjects.length > 0 &&
           state.MatchedProjects.map((project) => (
             <p key={project.id}>
-              <h4>Dates:</h4> <br></br> {project.contract.startDate} to {project.contract.endDate}{" "}
-              <br></br> <h4>Cost:</h4> <br></br> £{project.contract.size} <br></br><h4>Employees:</h4>{" "}
+              <h4>Dates:</h4> <br></br> {project.contract.startDate} to{" "}
+              {project.contract.endDate} <br></br> <h4>Cost:</h4> <br></br> £
+              {project.contract.size} <br></br>
+              <h4>Employees:</h4>{" "}
               {project.employees.map((employee) => (
                 <p key={employee.id}>
                   {employee.name}, {employee.role}
@@ -174,7 +180,9 @@ export function ClientPage(): JSX.Element {
                 src={employee.avatar}
                 alt={employee.name + " profile pic"}
               ></img>{" "}
-              <h4>Name: {employee.name}</h4>  <br></br> <h4>Role: {employee.role}</h4>{" "} <br></br><br></br>
+              <h4>Name: {employee.name}</h4> <br></br>{" "}
+              <h4>Role: {employee.role}</h4> <br></br>
+              <br></br>
             </p>
           ))}
       </div>

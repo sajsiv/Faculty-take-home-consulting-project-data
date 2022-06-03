@@ -315,12 +315,13 @@ export default function MainPage(): JSX.Element {
         onChange={(e) => handleEndDateFilter(e.target.value)}
       ></input>
       <div className="projectsFlex">
-      {state.ViewableProjects.map((e: ProjectDataInterface) => (
-        <div className="ProjectTile" key={e.id}>
-          <h2>
-            {e.clientName}, From {e.contract.startDate} to {e.contract.endDate}
-          </h2>
-          <h4>Employees</h4>
+        {state.ViewableProjects.map((e: ProjectDataInterface) => (
+          <div className="ProjectTile" key={e.id}>
+            <h2>
+              {e.clientName}, From {e.contract.startDate} to{" "}
+              {e.contract.endDate}
+            </h2>
+            <h4>Employees</h4>
             {e.employees.map((e) => (
               <div key={e.id}>
                 <p>
@@ -334,8 +335,8 @@ export default function MainPage(): JSX.Element {
             ) : (
               <></>
             )}
-        </div>
-      ))}
+          </div>
+        ))}
       </div>
     </div>
   );
